@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rajesh Bajiya — HACKEROFHELL | Penetration Tester</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+:root{
+--bg:#020810;--bg2:#040d18;--bg3:#071525;
+--card:rgba(6,18,34,.96);
+--br:rgba(0,212,255,.14);--br2:rgba(0,212,255,.32);
+--a:#00d4ff;--red:#ff2d55;--grn:#39ff14;--pur:#bf5af2;--yel:#ffd60a;
+--txt:#c8e6f0;--mu:#4a7a9b;
+}
+body{background:var(--bg);color:var(--txt);font-family:"Rajdhani",sans-serif;overflow-x:hidden;cursor:none}
+body::before{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,255,.012) 2px,rgba(0,212,255,.012) 4px);pointer-events:none;z-index:9997}
+#cur{width:10px;height:10px;background:var(--a);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:99999;box-shadow:0 0 14px rgba(0,212,255,.5);mix-blend-mode:screen}
+#ring{width:30px;height:30px;border:1px solid rgba(0,212,255,.45);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:99998;transition:all .15s}
+#ring.h{transform:scale(2.3);border-color:var(--red)}
+#prog{position:fixed;top:64px;left:0;height:2px;background:linear-gradient(90deg,var(--red),var(--a));z-index:9001;box-shadow:0 0 6px rgba(0,212,255,.5);transition:width .1s}
+#ptc{position:fixed;inset:0;z-index:0;pointer-events:none}
+nav{position:fixed;top:0;left:0;right:0;height:64px;z-index:9000;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,4vw,48px);background:rgba(2,8,16,.92);backdrop-filter:blur(18px);border-bottom:1px solid var(--br)}
+.logo{font-family:"Orbitron",monospace;font-size:clamp(.8rem,2vw,1rem);font-weight:900;letter-spacing:.08em;color:var(--a);text-shadow:0 0 16px rgba(0,212,255,.4)}
+.logo span{color:var(--red)}
+.nlinks{display:flex;gap:clamp(12px,2vw,24px);list-style:none}
+.nlinks a{font-family:"Share Tech Mono",monospace;font-size:.64rem;letter-spacing:.16em;color:var(--mu);text-transform:uppercase;transition:color .2s;position:relative;padding-bottom:2px}
+.nlinks a::after{content:"";position:absolute;bottom:0;left:0;right:0;height:1px;background:var(--a);transform:scaleX(0);transition:transform .2s;transform-origin:left}
+.nlinks a:hover,.nlinks a.act{color:var(--a)}
+.nlinks a:hover::after,.nlinks a.act::after{transform:scaleX(1)}
+.ndot{display:flex;align-items:center;gap:6px;font-family:"Share Tech Mono",monospace;font-size:.6rem;color:var(--grn)}
+.nd{width:7px;height:7px;border-radius:50%;background:var(--grn);box-shadow:0 0 7px rgba(57,255,20,.5);animation:bl 1.6s infinite}
+.ham{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
+.ham span{display:block;width:22px;height:2px;background:var(--a);transition:all .3s}
+.ham.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.ham.open span:nth-child(2){opacity:0}
+.ham.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mm{display:none;position:fixed;top:64px;left:0;right:0;background:rgba(2,8,16,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--br);padding:20px;z-index:8999}
+.mm.open{display:block}
+.mm li{list-style:none;border-bottom:1px solid var(--br)}
+.mm a{font-family:"Share Tech Mono",monospace;font-size:.82rem;letter-spacing:.2em;color:var(--mu);text-transform:uppercase;display:block;padding:12px 0;transition:color .2s}
+.mm a:hover{color:var(--a)}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.2}}
+section{position:relative;z-index:1}
+.W{max-width:1280px;margin:0 auto;padding:clamp(60px,9vw,110px) clamp(20px,5vw,52px)}
+.stag{font-family:"Share Tech Mono",monospace;font-size:.6rem;letter-spacing:.35em;color:var(--red);text-transform:uppercase;display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.stag::before{content:"//";color:var(--mu)}
+.stag::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--br2),transparent)}
+.stit{font-family:"Orbitron",monospace;font-size:clamp(1.5rem,3.5vw,2.6rem);font-weight:900;letter-spacing:.03em;line-height:1.1;margin-bottom:clamp(32px,5vw,56px)}
+.stit span{color:var(--a)}
+.rv{opacity:0;transform:translateY(32px);transition:opacity .7s,transform .7s}
+.rv.in{opacity:1;transform:none}
+.rv.d1{transition-delay:.12s}.rv.d2{transition-delay:.22s}.rv.d3{transition-delay:.32s}.rv.d4{transition-delay:.42s}
+@keyframes fup{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+/* HERO */
+#hero{min-height:100vh;display:flex;align-items:center}
+.hgrid{max-width:1280px;margin:0 auto;padding:clamp(80px,11vw,120px) clamp(20px,5vw,52px) 60px;display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(28px,5vw,72px);align-items:center;width:100%}
+.htag{font-family:"Share Tech Mono",monospace;font-size:.66rem;letter-spacing:.26em;color:var(--grn);text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:16px;opacity:0;animation:fup .6s .1s ease forwards}
+.htag::before{content:"";width:34px;height:1px;background:var(--grn);box-shadow:0 0 5px rgba(57,255,20,.5)}
+.hname{font-family:"Orbitron",monospace;font-size:clamp(2rem,5vw,4rem);font-weight:900;line-height:1.05;letter-spacing:.03em;opacity:0;animation:fup .6s .25s ease forwards}
+.hname .n1{background:linear-gradient(135deg,#fff 0%,var(--a) 70%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block}
+.hname .n2{background:linear-gradient(135deg,var(--red) 0%,var(--pur) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block}
+.hhandle{font-family:"Share Tech Mono",monospace;font-size:clamp(.85rem,1.8vw,1.2rem);color:var(--a);letter-spacing:.13em;margin-top:5px;text-shadow:0 0 16px rgba(0,212,255,.4);opacity:0;animation:fup .6s .4s ease forwards}
+.hdesc{font-size:clamp(.85rem,1.5vw,1rem);color:var(--mu);line-height:1.9;max-width:500px;margin-top:20px;opacity:0;animation:fup .6s .55s ease forwards}
+.hbdg{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px;opacity:0;animation:fup .6s .7s ease forwards}
+.bdg{font-family:"Share Tech Mono",monospace;font-size:.58rem;letter-spacing:.1em;padding:5px 12px;border:1px solid var(--br2);color:var(--a);background:rgba(0,212,255,.05);text-transform:uppercase;transition:all .2s;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)}
+.bdg:hover{background:rgba(0,212,255,.14);box-shadow:0 0 14px rgba(0,212,255,.3)}
+.bdg.r{color:var(--red);border-color:rgba(255,45,85,.3);background:rgba(255,45,85,.05)}
+.bdg.g{color:var(--grn);border-color:rgba(57,255,20,.3);background:rgba(57,255,20,.05)}
+.bdg.p{color:var(--pur);border-color:rgba(191,90,242,.3);background:rgba(191,90,242,.05)}
+.bdg.y{color:var(--yel);border-color:rgba(255,214,10,.3);background:rgba(255,214,10,.05)}
+.hcta{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px;opacity:0;animation:fup .6s .85s ease forwards}
+.btn,.btnO{font-family:"Share Tech Mono",monospace;font-size:.7rem;letter-spacing:.13em;text-transform:uppercase;padding:12px 26px;display:inline-flex;align-items:center;gap:7px;transition:all .22s;cursor:pointer;clip-path:polygon(7px 0%,100% 0%,calc(100% - 7px) 100%,0% 100%);text-decoration:none}
+.btn{background:var(--red);color:#fff;border:none}
+.btn:hover{background:#ff1040;box-shadow:0 0 26px rgba(255,45,85,.4);transform:translateY(-2px)}
+.btnO{background:transparent;color:var(--a);border:1px solid var(--br2)}
+.btnO:hover{background:rgba(0,212,255,.1);box-shadow:0 0 26px rgba(0,212,255,.3);transform:translateY(-2px)}
+/* Terminal */
+.term{background:rgba(3,10,20,.97);border:1px solid var(--br2);border-top:2px solid var(--red);font-family:"Share Tech Mono",monospace;font-size:.7rem;box-shadow:0 0 46px rgba(0,0,0,.5);opacity:0;animation:fup .6s .38s ease forwards}
+.th{display:flex;align-items:center;gap:6px;padding:8px 14px;background:rgba(6,18,34,.8);border-bottom:1px solid var(--br)}
+.td{width:10px;height:10px;border-radius:50%}.tdr{background:#ff5f57}.tdy{background:#febc2e}.tdg{background:#28c840}
+.ttl{margin:0 auto;font-size:.56rem;color:var(--mu);letter-spacing:.1em}
+.tb{padding:16px;line-height:2}
+.tl{display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap}
+.tp{color:var(--red);flex-shrink:0}.tc{color:var(--grn)}
+.to{padding-left:12px;word-break:break-word}
+.to.c{color:var(--a)}.to.m{color:var(--mu)}.to.g{color:var(--grn)}.to.r{color:var(--red)}
+.tst{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--br);margin-top:12px}
+.ts{background:rgba(3,10,20,.95);padding:10px 12px;text-align:center}
+.ts .n{font-size:1.6rem;font-weight:700;color:var(--red);line-height:1}
+.ts .n.g{color:var(--grn)}.ts .n.c{color:var(--a)}.ts .n.p{color:var(--pur)}
+.ts .l{font-size:.53rem;letter-spacing:.1em;color:var(--mu);margin-top:2px;text-transform:uppercase}
+.tcur{display:inline-block;width:7px;height:12px;background:var(--a);animation:bl .9s infinite;vertical-align:middle}
+/* ABOUT */
+#about{background:var(--bg2)}
+.agrid{display:grid;grid-template-columns:320px 1fr;gap:clamp(24px,5vw,60px);align-items:start}
+.acard{background:var(--card);border:1px solid var(--br2);padding:24px;position:relative}
+.acard::before,.acard::after{content:"";position:absolute;width:16px;height:16px;border-color:var(--red);border-style:solid}
+.acard::before{top:-1px;left:-1px;border-width:2px 0 0 2px}
+.acard::after{bottom:-1px;right:-1px;border-width:0 2px 2px 0}
+.avbox{width:100%;aspect-ratio:1;background:var(--bg3);border:1px solid var(--br);display:flex;align-items:center;justify-content:center;margin-bottom:18px;overflow:hidden;position:relative}
+.avbox::before,.avbox::after{content:"";position:absolute;width:14px;height:14px;border-color:var(--a);border-style:solid}
+.avbox::before{top:7px;right:7px;border-width:2px 2px 0 0}
+.avbox::after{bottom:7px;left:7px;border-width:0 0 2px 2px}
+.av{font-family:"Share Tech Mono",monospace;font-size:.36rem;line-height:1.13;color:var(--a);white-space:pre;text-align:center}
+.ir{display:flex;align-items:center;gap:9px;margin-bottom:10px;font-family:"Share Tech Mono",monospace;font-size:.65rem}
+.il{color:var(--mu);width:62px;flex-shrink:0;letter-spacing:.07em}
+.iv{color:var(--a)}.iv a{color:var(--a);transition:color .2s}.iv a:hover{color:var(--grn)}
+.sbts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+.sb{font-family:"Share Tech Mono",monospace;font-size:.58rem;letter-spacing:.07em;padding:9px 8px;border:1px solid var(--br);color:var(--mu);text-align:center;transition:all .2s;display:block}
+.sb:hover{color:var(--a);border-color:var(--a);background:rgba(0,212,255,.05)}
+.atxt h3{font-family:"Share Tech Mono",monospace;font-size:.65rem;letter-spacing:.2em;color:var(--a);text-transform:uppercase;margin-bottom:12px}
+.atxt p{color:var(--mu);line-height:1.9;font-size:.9rem;margin-bottom:14px}
+.atxt p strong{color:var(--txt)}
+.hg{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:22px}
+.hi{display:flex;align-items:flex-start;gap:9px;padding:12px 14px;border:1px solid var(--br);background:rgba(0,212,255,.02);transition:all .2s}
+.hi:hover{border-color:var(--br2);background:rgba(0,212,255,.06)}
+.hii{font-size:1.1rem;flex-shrink:0}
+.hit{font-family:"Share Tech Mono",monospace;font-size:.58rem;letter-spacing:.07em;color:var(--a);text-transform:uppercase;margin-bottom:3px}
+.hid{font-size:.76rem;color:var(--mu);line-height:1.5}
+/* SKILLS */
+#skills{background:var(--bg)}
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:44px}
+.scat{background:var(--card);border:1px solid var(--br);padding:22px;position:relative;overflow:hidden;transition:all .24s}
+.scat::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;transform:scaleX(0);transition:transform .3s;transform-origin:left}
+.scat:hover{border-color:var(--br2);transform:translateY(-3px);box-shadow:0 14px 36px rgba(0,0,0,.4)}
+.scat:hover::before{transform:scaleX(1)}
+.scat.s1::before{background:var(--red)}.scat.s2::before{background:var(--a)}.scat.s3::before{background:var(--grn)}
+.scat.s4::before{background:var(--pur)}.scat.s5::before{background:var(--yel)}.scat.s6::before{background:var(--a)}
+.sh{font-family:"Share Tech Mono",monospace;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;margin-bottom:16px}
+.scat.s1 .sh{color:var(--red)}.scat.s2 .sh{color:var(--a)}.scat.s3 .sh{color:var(--grn)}
+.scat.s4 .sh{color:var(--pur)}.scat.s5 .sh{color:var(--yel)}.scat.s6 .sh{color:var(--a)}
+.sr{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.sn{font-family:"Share Tech Mono",monospace;font-size:.66rem;color:var(--txt)}
+.srt{display:flex;align-items:center;gap:7px}
+.sbr{width:96px;height:3px;background:rgba(255,255,255,.06);overflow:hidden}
+.sf{height:100%;background:var(--a);transform:scaleX(0);transform-origin:left;transition:transform 1.4s cubic-bezier(.16,1,.3,1)}
+.scat.s1 .sf{background:var(--red)}.scat.s3 .sf{background:var(--grn)}.scat.s4 .sf{background:var(--pur)}.scat.s5 .sf{background:var(--yel)}
+.sp{font-family:"Share Tech Mono",monospace;font-size:.56rem;color:var(--mu);width:26px;text-align:right}
+.ttl2{font-family:"Share Tech Mono",monospace;font-size:.63rem;letter-spacing:.23em;color:var(--a);text-transform:uppercase;margin-bottom:14px}
+.tw{display:grid;grid-template-columns:repeat(auto-fill,minmax(95px,1fr));gap:9px}
+.tool{padding:8px 11px;border:1px solid var(--br);font-family:"Share Tech Mono",monospace;font-size:.6rem;letter-spacing:.06em;color:var(--mu);text-align:center;transition:all .2s;cursor:default}
+.tool:hover{border-color:var(--a);color:var(--a);background:rgba(0,212,255,.07);transform:translateY(-2px)}
+/* PROJECTS */
+#projects{background:var(--bg2)}
+.pf{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:32px}
+.pfb{font-family:"Share Tech Mono",monospace;font-size:.6rem;letter-spacing:.11em;padding:6px 14px;border:1px solid var(--br);color:var(--mu);background:transparent;text-transform:uppercase;transition:all .2s;cursor:pointer}
+.pfb:hover,.pfb.ac{color:var(--a);border-color:var(--a);background:rgba(0,212,255,.08)}
+.pgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.pc{background:var(--card);border:1px solid var(--br);padding:26px;position:relative;overflow:hidden;transition:all .24s;display:flex;flex-direction:column}
+.pc::before{content:"";position:absolute;top:0;left:0;right:0;height:3px}
+.pc.t1::before{background:linear-gradient(90deg,var(--red),var(--pur))}
+.pc.t2::before{background:linear-gradient(90deg,var(--a),var(--grn))}
+.pc.t3::before{background:linear-gradient(90deg,var(--pur),var(--red))}
+.pc.t4::before{background:linear-gradient(90deg,var(--yel),var(--red))}
+.pc.t5::before{background:linear-gradient(90deg,var(--grn),var(--a))}
+.pc.t6::before{background:linear-gradient(90deg,var(--a),var(--pur))}
+.pc:hover{border-color:rgba(0,212,255,.28);box-shadow:0 16px 44px rgba(0,0,0,.5);transform:translateY(-5px)}
+.pc.hidden{display:none}
+.ph{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.pi{font-size:1.7rem;line-height:1}
+.pls{display:flex;gap:6px}
+.pl{font-family:"Share Tech Mono",monospace;font-size:.56rem;letter-spacing:.1em;padding:4px 10px;border:1px solid var(--br);color:var(--mu);transition:all .2s;text-decoration:none;display:inline-block}
+.pl:hover{color:var(--a);border-color:var(--a)}
+.pn{font-family:"Orbitron",monospace;font-size:.85rem;font-weight:700;color:var(--txt);letter-spacing:.04em;margin-bottom:8px}
+.pst{display:flex;gap:13px;margin-bottom:11px;padding:8px 0;border-top:1px solid var(--br);border-bottom:1px solid var(--br)}
+.ps .n{font-family:"Share Tech Mono",monospace;font-size:.78rem;color:var(--a);display:block}
+.ps .l{font-size:.52rem;color:var(--mu);letter-spacing:.07em}
+.pd{font-size:.82rem;color:var(--mu);line-height:1.72;flex:1;margin-bottom:14px}
+.ptags{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto}
+.ptag{font-family:"Share Tech Mono",monospace;font-size:.54rem;letter-spacing:.07em;padding:3px 8px;border:1px solid var(--br);color:var(--mu);text-transform:uppercase}
+.ptag.h{color:var(--red);border-color:rgba(255,45,85,.25);background:rgba(255,45,85,.04)}
+/* EXPERIENCE */
+#experience{background:var(--bg)}
+.tl{position:relative;padding-left:38px}
+.tl::before{content:"";position:absolute;left:0;top:8px;bottom:0;width:1px;background:linear-gradient(180deg,var(--a),var(--br),transparent)}
+.tli{position:relative;margin-bottom:40px;padding-left:26px}
+.tld{position:absolute;left:-42px;top:4px;width:8px;height:8px;border-radius:50%;background:var(--a);border:2px solid var(--bg);box-shadow:0 0 9px rgba(0,212,255,.5);z-index:1}
+.tld.r{background:var(--red);box-shadow:0 0 9px rgba(255,45,85,.5)}.tld.g{background:var(--grn);box-shadow:0 0 9px rgba(57,255,20,.5)}
+.tldt{font-family:"Share Tech Mono",monospace;font-size:.6rem;letter-spacing:.13em;color:var(--a);margin-bottom:5px}
+.tlr{font-family:"Orbitron",monospace;font-size:.9rem;font-weight:700;color:var(--txt);letter-spacing:.04em;margin-bottom:2px}
+.tlo{font-family:"Share Tech Mono",monospace;font-size:.68rem;color:var(--red);letter-spacing:.1em;margin-bottom:10px}
+.tllist{list-style:none}
+.tllist li{font-size:.84rem;color:var(--mu);line-height:1.8;padding-left:14px;position:relative;margin-bottom:3px}
+.tllist li::before{content:"→";position:absolute;left:0;color:var(--a);font-size:.68rem}
+.tltags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+/* EDUCATION */
+#education{background:var(--bg2)}
+.egrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.ec{background:var(--card);border:1px solid var(--br);padding:22px;transition:all .24s;position:relative;overflow:hidden}
+.ec::before{content:"";position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--a);transform:scaleX(0);transition:transform .3s;transform-origin:left}
+.ec:hover::before{transform:scaleX(1)}
+.ec:hover{border-color:var(--br2);transform:translateY(-3px)}
+.eico{font-size:1.9rem;margin-bottom:12px}
+.edeg{font-family:"Orbitron",monospace;font-size:.75rem;font-weight:700;color:var(--txt);letter-spacing:.03em;margin-bottom:5px;line-height:1.4}
+.einst{font-family:"Share Tech Mono",monospace;font-size:.62rem;color:var(--a);letter-spacing:.07em;margin-bottom:5px}
+.eyr{font-family:"Share Tech Mono",monospace;font-size:.6rem;color:var(--mu)}
+.egrade{font-family:"Share Tech Mono",monospace;font-size:.65rem;color:var(--grn);margin-top:7px}
+/* CERTS */
+#certifications{background:var(--bg)}
+.cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.cc{background:var(--card);border:1px solid var(--br);padding:20px;transition:all .24s;position:relative;overflow:hidden}
+.cc:hover{border-color:var(--br2);transform:translateY(-3px)}
+.cico{font-size:1.7rem;margin-bottom:10px}
+.cn{font-family:"Orbitron",monospace;font-size:.74rem;font-weight:700;color:var(--txt);letter-spacing:.03em;margin-bottom:4px;line-height:1.4}
+.ciss{font-family:"Share Tech Mono",monospace;font-size:.62rem;color:var(--a);letter-spacing:.07em;margin-bottom:4px}
+.cdt{font-family:"Share Tech Mono",monospace;font-size:.58rem;color:var(--mu)}
+.cbg{position:absolute;top:0;right:0;font-family:"Share Tech Mono",monospace;font-size:.5rem;letter-spacing:.07em;padding:4px 11px;text-transform:uppercase;clip-path:polygon(8px 0%,100% 0%,100% 100%,0% 100%)}
+.cbg.v{background:var(--grn);color:var(--bg)}.cbg.b{background:var(--a);color:var(--bg)}.cbg.r{background:var(--red);color:#fff}
+/* RESUME */
+#resume{background:var(--bg2)}
+.rw{display:grid;grid-template-columns:1fr 1.1fr;gap:clamp(22px,4vw,52px);align-items:start}
+.rp{background:var(--card);border:1px solid var(--br2);padding:26px;font-family:"Share Tech Mono",monospace;font-size:.68rem;color:var(--mu);line-height:1.85;position:relative}
+.rp::before{content:"RESUME PREVIEW";position:absolute;top:-9px;left:14px;background:var(--bg2);padding:0 7px;font-size:.56rem;letter-spacing:.13em;color:var(--a)}
+.rpn{font-family:"Orbitron",monospace;font-size:.9rem;color:var(--txt);margin-bottom:2px;letter-spacing:.04em}
+.rps{color:var(--a);font-size:.62rem;margin-bottom:16px;letter-spacing:.1em}
+.rpse{margin-top:12px;padding-top:12px;border-top:1px solid var(--br)}
+.rpst{color:var(--red);font-size:.58rem;letter-spacing:.17em;text-transform:uppercase;margin-bottom:7px}
+.rpi{color:var(--mu);margin-bottom:4px;font-size:.62rem}
+.rpi span{color:var(--grn)}.rpi a{color:var(--a)}
+.ri h3{font-family:"Orbitron",monospace;font-size:1.1rem;font-weight:700;color:var(--txt);letter-spacing:.04em;margin-bottom:10px}
+.ri p{color:var(--mu);font-size:.88rem;line-height:1.8;margin-bottom:22px}
+.dlb{display:flex;align-items:center;gap:13px;padding:14px 20px;border:1px solid var(--br2);background:rgba(0,212,255,.04);color:var(--txt);transition:all .24s;margin-bottom:10px;text-decoration:none;cursor:pointer}
+.dlb:hover{background:rgba(0,212,255,.12);border-color:var(--a);box-shadow:0 0 22px rgba(0,212,255,.17);transform:translateY(-2px)}
+.dlico{font-size:1.6rem}
+.dlt .m{color:var(--a);font-family:"Share Tech Mono",monospace;font-size:.77rem;display:block;letter-spacing:.07em}
+.dlt .s{color:var(--mu);font-family:"Share Tech Mono",monospace;font-size:.6rem;letter-spacing:.1em}
+.rsts{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:18px}
+.rst{background:var(--card);border:1px solid var(--br);padding:13px 8px;text-align:center}
+.rst .n{font-family:"Orbitron",monospace;font-size:1.4rem;font-weight:700;color:var(--a)}
+.rst .l{font-family:"Share Tech Mono",monospace;font-size:.52rem;color:var(--mu);letter-spacing:.07em;margin-top:2px;text-transform:uppercase}
+/* CONTACT */
+#contact{background:var(--bg)}
+.cw{display:grid;grid-template-columns:1fr 1fr;gap:clamp(22px,4vw,52px)}
+.ci h3{font-family:"Orbitron",monospace;font-size:1.05rem;font-weight:700;color:var(--txt);margin-bottom:9px;letter-spacing:.04em}
+.ci p{color:var(--mu);font-size:.88rem;line-height:1.8;margin-bottom:24px}
+.citems{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
+.citem{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--br);background:rgba(0,212,255,.02);text-decoration:none;transition:all .2s}
+.citem:hover{border-color:var(--br2);background:rgba(0,212,255,.07);transform:translateX(5px)}
+.ciico{font-size:1.2rem}
+.cilbl{font-family:"Share Tech Mono",monospace;font-size:.56rem;letter-spacing:.13em;color:var(--mu);text-transform:uppercase}
+.cival{font-family:"Share Tech Mono",monospace;font-size:.72rem;color:var(--a)}
+.sog{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.soc{display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid var(--br);color:var(--mu);font-family:"Share Tech Mono",monospace;font-size:.64rem;letter-spacing:.07em;transition:all .2s;text-decoration:none}
+.soc:hover{border-color:var(--br2);color:var(--a);background:rgba(0,212,255,.05)}
+.cf{display:flex;flex-direction:column;gap:14px}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg label{font-family:"Share Tech Mono",monospace;font-size:.6rem;letter-spacing:.13em;color:var(--mu);text-transform:uppercase}
+.fg input,.fg textarea{background:rgba(3,10,20,.8);border:1px solid var(--br);color:var(--txt);font-family:"Share Tech Mono",monospace;font-size:.78rem;padding:11px 13px;outline:none;transition:all .2s;resize:none}
+.fg input:focus,.fg textarea:focus{border-color:var(--a);box-shadow:0 0 14px rgba(0,212,255,.1)}
+.fg textarea{min-height:105px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+/* DEPLOY */
+#deploy{background:var(--bg2)}
+.dgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.dc{background:var(--card);border:1px solid var(--br);padding:22px;position:relative;overflow:hidden;transition:all .22s}
+.dc:hover{border-color:var(--br2);transform:translateY(-3px)}
+.dcn{font-family:"Orbitron",monospace;font-size:2.6rem;font-weight:900;color:rgba(0,212,255,.06);position:absolute;top:6px;right:14px;line-height:1}
+.dct{font-family:"Orbitron",monospace;font-size:.8rem;font-weight:700;color:var(--a);letter-spacing:.06em;margin-bottom:9px}
+.dcd{font-size:.8rem;color:var(--mu);line-height:1.7;margin-bottom:12px}
+.code{background:rgba(2,5,8,.9);border:1px solid var(--br);border-left:3px solid var(--a);padding:11px 13px;font-family:"Share Tech Mono",monospace;font-size:.64rem;color:var(--grn);line-height:1.85;overflow-x:auto;white-space:pre}
+.code .cm{color:var(--mu)}.code .kw{color:var(--a)}.code .ar{color:var(--red)}
+.tipbox{margin-top:32px;padding:18px;border:1px solid rgba(57,255,20,.2);background:rgba(57,255,20,.03);border-left:3px solid var(--grn)}
+.tiptit{font-family:"Share Tech Mono",monospace;font-size:.62rem;color:var(--grn);letter-spacing:.17em;margin-bottom:10px}
+.tiplist{display:grid;grid-template-columns:1fr 1fr;gap:0 22px;list-style:none}
+.tiplist li{font-size:.8rem;color:var(--mu);line-height:2;padding-left:14px;position:relative}
+.tiplist li::before{content:"→";position:absolute;left:0;color:var(--grn);font-size:.66rem}
+.tiplist li strong{color:var(--txt)}
+/* FOOTER */
+footer{background:var(--bg);border-top:1px solid var(--br);padding:clamp(22px,4vw,38px) clamp(20px,5vw,52px);position:relative;z-index:1}
+.fi{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px}
+.fl .fn{font-family:"Orbitron",monospace;font-size:.78rem;color:var(--a);letter-spacing:.07em;margin-bottom:3px}
+.fl p{font-family:"Share Tech Mono",monospace;font-size:.6rem;color:var(--mu);line-height:2;letter-spacing:.05em}
+.fc{font-family:"Share Tech Mono",monospace;font-size:.6rem;color:var(--mu);text-align:center;letter-spacing:.05em}
+.fc .hh{font-family:"Orbitron",monospace;font-size:.68rem;color:var(--a);margin-bottom:3px}
+.fr2{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.fr2 a{font-family:"Share Tech Mono",monospace;font-size:.6rem;color:var(--mu);transition:color .2s;letter-spacing:.07em}
+.fr2 a:hover{color:var(--a)}
+/* RESPONSIVE */
+@media(max-width:1024px){
+.sgrid{grid-template-columns:repeat(2,1fr)}
+.pgrid{grid-template-columns:1fr}
+.cgrid{grid-template-columns:repeat(2,1fr)}
+.egrid{grid-template-columns:repeat(2,1fr)}
+.agrid{grid-template-columns:280px 1fr}
+}
+@media(max-width:768px){
+.nlinks,.ndot{display:none}
+.ham{display:flex}
+.hgrid{grid-template-columns:1fr;padding-top:88px}
+.hterm{order:-1}
+.agrid{grid-template-columns:1fr}
+.sgrid{grid-template-columns:1fr}
+.cgrid{grid-template-columns:1fr}
+.egrid{grid-template-columns:1fr}
+.rw{grid-template-columns:1fr}
+.cw{grid-template-columns:1fr}
+.dgrid{grid-template-columns:1fr}
+.hg{grid-template-columns:1fr}
+.fr{grid-template-columns:1fr}
+.fi{flex-direction:column;text-align:center}
+.fr2{align-items:center}
+.rsts{grid-template-columns:repeat(2,1fr)}
+.tiplist{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+.hcta{flex-direction:column}
+.sog{grid-template-columns:1fr}
+.tw{grid-template-columns:repeat(auto-fill,minmax(80px,1fr))}
+.pf{gap:7px}
+}
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="ring"></div>
+<div id="prog"></div>
+<canvas id="ptc"></canvas>
+<nav>
+<a href="#hero" class="logo">RAJESH<span>.</span>BAJIYA</a>
+<ul class="nlinks">
+<li><a href="#about">About</a></li>
+<li><a href="#skills">Skills</a></li>
+<li><a href="#projects">Projects</a></li>
+<li><a href="#experience">Experience</a></li>
+<li><a href="#education">Education</a></li>
+<li><a href="#certifications">Certs</a></li>
+<li><a href="#resume">Resume</a></li>
+<li><a href="#contact">Contact</a></li>
+<li><a href="#deploy">Deploy</a></li>
+</ul>
+<div class="ndot"><div class="nd"></div>AVAILABLE</div>
+<button class="ham" id="ham"><span></span><span></span><span></span></button>
+</nav>
+<div class="mm" id="mm">
+<ul>
+<li><a href="#about" onclick="cM()">About</a></li>
+<li><a href="#skills" onclick="cM()">Skills</a></li>
+<li><a href="#projects" onclick="cM()">Projects</a></li>
+<li><a href="#experience" onclick="cM()">Experience</a></li>
+<li><a href="#education" onclick="cM()">Education</a></li>
+<li><a href="#certifications" onclick="cM()">Certifications</a></li>
+<li><a href="#resume" onclick="cM()">Resume</a></li>
+<li><a href="#contact" onclick="cM()">Contact</a></li>
+<li><a href="#deploy" onclick="cM()">Deploy Guide</a></li>
+</ul>
+</div>
+<!-- HERO -->
+<section id="hero">
+<div class="hgrid">
+<div>
+<div class="htag">Cybersecurity Enthusiast &amp; Aspiring Penetration Tester</div>
+<h1 class="hname"><span class="n1">RAJESH</span><span class="n2">BAJIYA</span></h1>
+<div class="hhandle">// HACKEROFHELL</div>
+<p class="hdesc">B.Tech CSE · Jaipur, Rajasthan · Ethical Hacking Intern · Bug Bounty Hunter on HackerOne &amp; Bugcrowd · Creator of <strong>HackerOfHell ULTRA</strong>, <strong>HELLSQLI</strong> &amp; <strong>HELLXSS</strong> — open-source security frameworks.</p>
+<div class="hbdg">
+<span class="bdg r">Bug Bounty Hunter</span>
+<span class="bdg">Penetration Tester</span>
+<span class="bdg g">Tool Developer</span>
+<span class="bdg p">OWASP Top 10</span>
+<span class="bdg y">B.Tech CSE 2025</span>
+<span class="bdg">Jaipur 🇮🇳</span>
+</div>
+<div class="hcta">
+<a href="#projects" class="btn">🚀 View Projects</a>
+<a href="#contact" class="btnO">📩 Hire Me</a>
+<a href="#resume" class="btnO">📄 Resume</a>
+</div>
+</div>
+<div class="hterm">
+<div class="term">
+<div class="th"><div class="td tdr"></div><div class="td tdy"></div><div class="td tdg"></div><div class="ttl">kali@HACKEROFHELL:~$</div></div>
+<div class="tb">
+<div class="tl"><span class="tp">└─$</span><span class="tc"> cat whoami.txt</span></div>
+<div class="to c">╔═══════════════════════════╗</div>
+<div class="to c">║ RAJESH BAJIYA — HOH      ║</div>
+<div class="to c">╚═══════════════════════════╝</div>
+<div class="to"><span style="color:var(--red)">Name   :</span> Rajesh Bajiya</div>
+<div class="to"><span style="color:var(--red)">Handle :</span> HACKEROFHELL</div>
+<div class="to"><span style="color:var(--red)">Email  :</span> rajeshbajya978@gmail.com</div>
+<div class="to"><span style="color:var(--red)">Phone  :</span> +91 7073267031</div>
+<div class="to"><span style="color:var(--red)">City   :</span> Jaipur, Rajasthan 🇮🇳</div>
+<div class="to g">Status : HUNTING BUGS 🔥</div>
+<div class="to m">────────────────────────────</div>
+<div class="tl"><span class="tp">└─$</span><span class="tc"> ./stats.sh</span></div>
+<div class="tst">
+<div class="ts"><div class="n" id="c1">0</div><div class="l">Bugs Found</div></div>
+<div class="ts"><div class="n g" id="c2">0</div><div class="l">Tools Built</div></div>
+<div class="ts"><div class="n c" id="c3">0</div><div class="l">Lines Code</div></div>
+<div class="ts"><div class="n p" id="c4">0</div><div class="l">Techniques</div></div>
+</div>
+<div class="tl" style="margin-top:10px"><span class="tp">└─$</span><span class="tc"> _</span><span class="tcur"></span></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ABOUT -->
+<section id="about">
+<div class="W">
+<div class="stag rv">Section 01</div>
+<h2 class="stit rv">About <span>Me</span></h2>
+<div class="agrid">
+<div class="rv">
+<div class="acard">
+<div class="avbox">
+<pre class="av">⠀⠀⠀⣠⣤⣤⣤⣤⣤⣄⡀⠀
+⠀⠀⣰⡿⠛⠛⠛⠛⠿⣿⣷⡀
+⠀⠀⣸⡿⠁⠀⣤⣤⣄⠀⢸⣿
+⠀⢰⣿⠁⠀⣼⣿⣿⣿⣷⢸⣿
+⠀⣿⡇⠀⠀⠙⠿⠿⠟⠀⢸⣿
+⠀⢿⣷⠀⠀⠀⣤⣤⡄⠀⣾⡿
+⠀⠈⢿⣷⡀⠀⠀⠀⠀⣸⡿⠁
+⠀⠀⠈⠻⣿⣦⣤⣴⡿⠛⠁
+  HACKEROFHELL
+  RAJESH BAJIYA</pre>
+</div>
+<div class="ir"><span class="il">NAME</span><span class="iv">Rajesh Bajiya</span></div>
+<div class="ir"><span class="il">HANDLE</span><span class="iv" style="color:var(--red)">HACKEROFHELL</span></div>
+<div class="ir"><span class="il">EMAIL</span><span class="iv"><a href="mailto:rajeshbajya978@gmail.com">rajeshbajya978@gmail.com</a></span></div>
+<div class="ir"><span class="il">PHONE</span><span class="iv"><a href="tel:+917073267031">+91 7073267031</a></span></div>
+<div class="ir"><span class="il">CITY</span><span class="iv">Jaipur, Rajasthan</span></div>
+<div class="ir"><span class="il">DEGREE</span><span class="iv">B.Tech CSE (2021–25)</span></div>
+<div class="ir"><span class="il">GITHUB</span><span class="iv"><a href="https://github.com/hellrider978" target="_blank">hellrider978</a></span></div>
+<div class="ir"><span class="il">LINKEDIN</span><span class="iv"><a href="https://www.linkedin.com/in/rajeshbajiya-836571219" target="_blank">View Profile</a></span></div>
+<div class="sbts">
+<a href="https://github.com/hellrider978" target="_blank" class="sb">🐙 GitHub</a>
+<a href="https://hackerone.com/hellrider978" target="_blank" class="sb">🎯 HackerOne</a>
+<a href="https://bugcrowd.com/hellrider978" target="_blank" class="sb">🐛 Bugcrowd</a>
+<a href="https://www.linkedin.com/in/rajeshbajiya-836571219" target="_blank" class="sb">💼 LinkedIn</a>
+</div>
+</div>
+</div>
+<div class="atxt rv d2">
+<h3>// Who Am I?</h3>
+<p>I'm <strong>Rajesh Bajiya</strong>, known as <strong>HACKEROFHELL</strong> — a driven cybersecurity professional pursuing full-time Penetration Tester and Ethical Hacking roles. Final year <strong>B.Tech Computer Science &amp; Engineering</strong> student at College of Technology and Engineering, Udaipur.</p>
+<p>Completed an intensive <strong>Ethical Hacking Internship</strong> and two Forage virtual job simulations (Commonwealth Bank &amp; DATACOM) delivering hands-on penetration testing, incident response, vulnerability assessment, and risk analysis. Proficient with <strong>Metasploit, Burp Suite, Wireshark</strong>, and OWASP methodologies.</p>
+<p>Beyond certifications, I build real tools: <strong>HackerOfHell ULTRA</strong> (3,153 lines, 20 phases, 80+ attack techniques), <strong>HELLSQLI</strong>, and <strong>HELLXSS</strong> — total <strong>7,500+ lines</strong> of security automation code used by researchers worldwide.</p>
+<div class="hg">
+<div class="hi"><span class="hii">🎯</span><div><div class="hit">Bug Bounty</div><div class="hid">HackerOne · Bugcrowd · Private</div></div></div>
+<div class="hi"><span class="hii">⚡</span><div><div class="hit">Tool Developer</div><div class="hid">3 open-source security frameworks</div></div></div>
+<div class="hi"><span class="hii">🔥</span><div><div class="hit">Automation First</div><div class="hid">80+ attack techniques automated</div></div></div>
+<div class="hi"><span class="hii">🛡️</span><div><div class="hit">Ethical Hacker</div><div class="hid">Responsible disclosure always</div></div></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SKILLS -->
+<section id="skills">
+<div class="W">
+<div class="stag rv">Section 02</div>
+<h2 class="stit rv">Technical <span>Skills</span></h2>
+<div class="sgrid rv">
+<div class="scat s1">
+<div class="sh">🔴 Offensive Security</div>
+<div class="sr"><span class="sn">Penetration Testing</span><div class="srt"><div class="sbr"><div class="sf" data-w=".95"></div></div><span class="sp">95%</span></div></div>
+<div class="sr"><span class="sn">Web App Testing</span><div class="srt"><div class="sbr"><div class="sf" data-w=".97"></div></div><span class="sp">97%</span></div></div>
+<div class="sr"><span class="sn">Bug Bounty Hunting</span><div class="srt"><div class="sbr"><div class="sf" data-w=".92"></div></div><span class="sp">92%</span></div></div>
+<div class="sr"><span class="sn">Vulnerability Scanning</span><div class="srt"><div class="sbr"><div class="sf" data-w=".90"></div></div><span class="sp">90%</span></div></div>
+<div class="sr"><span class="sn">Ethical Hacking</span><div class="srt"><div class="sbr"><div class="sf" data-w=".93"></div></div><span class="sp">93%</span></div></div>
+</div>
+<div class="scat s2">
+<div class="sh">🔵 Web Security</div>
+<div class="sr"><span class="sn">SQL Injection</span><div class="srt"><div class="sbr"><div class="sf" data-w=".99"></div></div><span class="sp">99%</span></div></div>
+<div class="sr"><span class="sn">XSS (All Types)</span><div class="srt"><div class="sbr"><div class="sf" data-w=".98"></div></div><span class="sp">98%</span></div></div>
+<div class="sr"><span class="sn">SSRF / LFI / RCE</span><div class="srt"><div class="sbr"><div class="sf" data-w=".90"></div></div><span class="sp">90%</span></div></div>
+<div class="sr"><span class="sn">IDOR / Broken Auth</span><div class="srt"><div class="sbr"><div class="sf" data-w=".88"></div></div><span class="sp">88%</span></div></div>
+<div class="sr"><span class="sn">OWASP Top 10</span><div class="srt"><div class="sbr"><div class="sf" data-w="1"></div></div><span class="sp">100%</span></div></div>
+</div>
+<div class="scat s3">
+<div class="sh">🟢 Programming</div>
+<div class="sr"><span class="sn">Python</span><div class="srt"><div class="sbr"><div class="sf" data-w=".88"></div></div><span class="sp">88%</span></div></div>
+<div class="sr"><span class="sn">Bash Scripting</span><div class="srt"><div class="sbr"><div class="sf" data-w=".93"></div></div><span class="sp">93%</span></div></div>
+<div class="sr"><span class="sn">HTML / CSS / JS</span><div class="srt"><div class="sbr"><div class="sf" data-w=".80"></div></div><span class="sp">80%</span></div></div>
+<div class="sr"><span class="sn">Tool Development</span><div class="srt"><div class="sbr"><div class="sf" data-w=".92"></div></div><span class="sp">92%</span></div></div>
+<div class="sr"><span class="sn">MySQL</span><div class="srt"><div class="sbr"><div class="sf" data-w=".82"></div></div><span class="sp">82%</span></div></div>
+</div>
+<div class="scat s4">
+<div class="sh">🟣 Network &amp; Forensics</div>
+<div class="sr"><span class="sn">Wireshark</span><div class="srt"><div class="sbr"><div class="sf" data-w=".85"></div></div><span class="sp">85%</span></div></div>
+<div class="sr"><span class="sn">Packet Sniffing</span><div class="srt"><div class="sbr"><div class="sf" data-w=".82"></div></div><span class="sp">82%</span></div></div>
+<div class="sr"><span class="sn">MITM Simulation</span><div class="srt"><div class="sbr"><div class="sf" data-w=".80"></div></div><span class="sp">80%</span></div></div>
+<div class="sr"><span class="sn">Network Recon</span><div class="srt"><div class="sbr"><div class="sf" data-w=".87"></div></div><span class="sp">87%</span></div></div>
+<div class="sr"><span class="sn">Incident Response</span><div class="srt"><div class="sbr"><div class="sf" data-w=".83"></div></div><span class="sp">83%</span></div></div>
+</div>
+<div class="scat s5">
+<div class="sh">🟡 Security Tools</div>
+<div class="sr"><span class="sn">Metasploit</span><div class="srt"><div class="sbr"><div class="sf" data-w=".88"></div></div><span class="sp">88%</span></div></div>
+<div class="sr"><span class="sn">Burp Suite</span><div class="srt"><div class="sbr"><div class="sf" data-w=".90"></div></div><span class="sp">90%</span></div></div>
+<div class="sr"><span class="sn">Nmap</span><div class="srt"><div class="sbr"><div class="sf" data-w=".93"></div></div><span class="sp">93%</span></div></div>
+<div class="sr"><span class="sn">Nuclei</span><div class="srt"><div class="sbr"><div class="sf" data-w=".88"></div></div><span class="sp">88%</span></div></div>
+<div class="sr"><span class="sn">SQLmap / Dalfox</span><div class="srt"><div class="sbr"><div class="sf" data-w=".91"></div></div><span class="sp">91%</span></div></div>
+</div>
+<div class="scat s6">
+<div class="sh">⚪ Risk &amp; Reporting</div>
+<div class="sr"><span class="sn">Risk Assessment</span><div class="srt"><div class="sbr"><div class="sf" data-w=".85"></div></div><span class="sp">85%</span></div></div>
+<div class="sr"><span class="sn">CVSS Scoring</span><div class="srt"><div class="sbr"><div class="sf" data-w=".88"></div></div><span class="sp">88%</span></div></div>
+<div class="sr"><span class="sn">Threat Modeling</span><div class="srt"><div class="sbr"><div class="sf" data-w=".80"></div></div><span class="sp">80%</span></div></div>
+<div class="sr"><span class="sn">Security Awareness</span><div class="srt"><div class="sbr"><div class="sf" data-w=".87"></div></div><span class="sp">87%</span></div></div>
+<div class="sr"><span class="sn">Report Writing</span><div class="srt"><div class="sbr"><div class="sf" data-w=".90"></div></div><span class="sp">90%</span></div></div>
+</div>
+</div>
+<div class="ttl2 rv">// Tools &amp; Technologies</div>
+<div class="tw rv">
+<div class="tool">Kali Linux</div><div class="tool">Burp Suite</div><div class="tool">Metasploit</div><div class="tool">Nmap</div><div class="tool">Wireshark</div><div class="tool">SQLmap</div><div class="tool">Nuclei</div><div class="tool">Subfinder</div><div class="tool">Amass</div><div class="tool">HTTPX</div><div class="tool">FFUF</div><div class="tool">Gobuster</div><div class="tool">Dalfox</div><div class="tool">Masscan</div><div class="tool">WPScan</div><div class="tool">Hydra</div><div class="tool">Hashcat</div><div class="tool">Shodan</div><div class="tool">Recon-ng</div><div class="tool">Katana</div><div class="tool">DVWA</div><div class="tool">Juice Shop</div><div class="tool">Nikto</div><div class="tool">theHarvester</div><div class="tool">GAU</div><div class="tool">Waybackurls</div><div class="tool">Python</div><div class="tool">Bash</div><div class="tool">MySQL</div><div class="tool">Feroxbuster</div>
+</div>
+</div>
+</section>
+<!-- PROJECTS -->
+<section id="projects">
+<div class="W">
+<div class="stag rv">Section 03</div>
+<h2 class="stit rv">Featured <span>Projects</span></h2>
+<div class="pf rv" id="pf">
+<button class="pfb ac" data-f="all">ALL</button>
+<button class="pfb" data-f="framework">FRAMEWORKS</button>
+<button class="pfb" data-f="tool">TOOLS</button>
+<button class="pfb" data-f="web">WEB SECURITY</button>
+</div>
+<div class="pgrid" id="pg">
+<div class="pc t1 rv" data-cat="framework">
+<div class="ph"><span class="pi">⚡</span><div class="pls"><a href="https://github.com/hellrider978" target="_blank" class="pl">GITHUB</a><a href="#deploy" class="pl">DOCS</a></div></div>
+<div class="pn">HackerOfHell ULTRA v5.0</div>
+<div class="pst"><div class="ps"><span class="n">3,153</span><span class="l">Lines</span></div><div class="ps"><span class="n">20</span><span class="l">Phases</span></div><div class="ps"><span class="n">80+</span><span class="l">Techniques</span></div></div>
+<div class="pd">World's most complete bug bounty automation framework. One command → 20 automated phases → professional HTML pentest report. Covers OSINT, SQLi, XSS, SSRF, LFI, RCE, cloud misconfigs (S3/GCS/Azure/Firebase), Kubernetes, Docker, subdomain takeover, bug chain analysis. Zero manual steps needed.</div>
+<div class="ptags"><span class="ptag h">BASH</span><span class="ptag">PYTHON</span><span class="ptag">NUCLEI</span><span class="ptag">BUG BOUNTY</span><span class="ptag">AUTOMATION</span></div>
+</div>
+<div class="pc t2 rv d1" data-cat="tool web">
+<div class="ph"><span class="pi">💉</span><div class="pls"><a href="https://github.com/hellrider978" target="_blank" class="pl">GITHUB</a></div></div>
+<div class="pn">HELLSQLI ULTRA v1.0</div>
+<div class="pst"><div class="ps"><span class="n">2,332</span><span class="l">Lines</span></div><div class="ps"><span class="n">13</span><span class="l">Modules</span></div><div class="ps"><span class="n">6</span><span class="l">DBs</span></div></div>
+<div class="pd">World's most powerful SQL injection hunter. Pure Python 3. Auto-crawls target, tests error-based, union-based, boolean blind, time-based, header injection, login bypass, NoSQL injection, second-order, cookie SQLi, JSON/API injection. Auto-dumps DB on confirmation. WAF detection + 15 bypass techniques.</div>
+<div class="ptags"><span class="ptag h">SQL INJECTION</span><span class="ptag">PYTHON</span><span class="ptag">NOSQL</span><span class="ptag">WAF BYPASS</span></div>
+</div>
+<div class="pc t3 rv d2" data-cat="tool web">
+<div class="ph"><span class="pi">🔥</span><div class="pls"><a href="https://github.com/hellrider978" target="_blank" class="pl">GITHUB</a></div></div>
+<div class="pn">HELLXSS ULTRA v1.0</div>
+<div class="pst"><div class="ps"><span class="n">2,047</span><span class="l">Lines</span></div><div class="ps"><span class="n">13</span><span class="l">Modules</span></div><div class="ps"><span class="n">200+</span><span class="l">Payloads</span></div></div>
+<div class="pd">World's most complete XSS hunter. Finds reflected, stored, DOM, blind, header, JSON/API, template injection (Angular/Vue/Jinja2/Twig), upload XSS (SVG/HTML), prototype pollution, polyglot, mXSS. Context-aware payload selection. Cookie stealer + keylogger exploit in every report. CSP analysis.</div>
+<div class="ptags"><span class="ptag h">XSS</span><span class="ptag">DOM XSS</span><span class="ptag">BLIND XSS</span><span class="ptag">PYTHON</span></div>
+</div>
+<div class="pc t4 rv d3" data-cat="framework">
+<div class="ph"><span class="pi">🖥️</span><div class="pls"><a href="https://github.com/hellrider978" target="_blank" class="pl">GITHUB</a></div></div>
+<div class="pn">HackerOfHell GUI v3.0</div>
+<div class="pst"><div class="ps"><span class="n">692</span><span class="l">Lines</span></div><div class="ps"><span class="n">5</span><span class="l">Tabs</span></div><div class="ps"><span class="n">23</span><span class="l">Modules</span></div></div>
+<div class="pd">Professional Tkinter desktop GUI. 5 tabs: Live Terminal Output (color-coded), Findings Dashboard (CRITICAL/HIGH/MEDIUM/LOW counters), Phase Progress Tracker, Vulnerability Chain Map, live Matrix animation. Real-time streaming output, one-click report opening.</div>
+<div class="ptags"><span class="ptag h">PYTHON GUI</span><span class="ptag">TKINTER</span><span class="ptag">KALI LINUX</span></div>
+</div>
+<div class="pc t5 rv" data-cat="tool">
+<div class="ph"><span class="pi">🛡️</span><div class="pls"><a href="https://github.com/hellrider978" target="_blank" class="pl">GITHUB</a></div></div>
+<div class="pn">Real-Time Antivirus Engine</div>
+<div class="pst"><div class="ps"><span class="n">Sig+Heuristic</span><span class="l">Detection</span></div><div class="ps"><span class="n">Real-Time</span><span class="l">Scanning</span></div><div class="ps"><span class="n">Auto</span><span class="l">Clean</span></div></div>
+<div class="pd">Signature-based + heuristic malware detection engine with real-time file scanning, auto-clean, and multi-application shielding. Automatic definition updates and behavioral blocking — detected and neutralized custom test malware. Key focus: prevention of unauthorized access and persistence mechanisms.</div>
+<div class="ptags"><span class="ptag h">MALWARE DETECTION</span><span class="ptag">HEURISTIC</span><span class="ptag">REAL-TIME</span></div>
+</div>
+<div class="pc t6 rv d1" data-cat="tool web">
+<div class="ph"><span class="pi">🔑</span><div class="pls"><a href="https://github.com/hellrider978" target="_blank" class="pl">GITHUB</a></div></div>
+<div class="pn">Password Cracker &amp; Risk Demo</div>
+<div class="pst"><div class="ps"><span class="n">Brute Force</span><span class="l">Attack</span></div><div class="ps"><span class="n">Dictionary</span><span class="l">Attack</span></div><div class="ps"><span class="n">Strength</span><span class="l">Analyzer</span></div></div>
+<div class="pd">Custom cracking tool to brute-force and dictionary-attack plaintext passwords exposing weak storage risks. Modeled credential stuffing scenarios. Integrated strength analyzer enforcing bcrypt/Argon2 hashing best practices. Used as educational payload highlighting password policy failures for incident response training.</div>
+<div class="ptags"><span class="ptag h">PASSWORD CRACKING</span><span class="ptag">BRUTE FORCE</span><span class="ptag">BCRYPT</span></div>
+</div>
+</div>
+</div>
+</section>
+<!-- EXPERIENCE -->
+<section id="experience">
+<div class="W">
+<div class="stag rv">Section 04</div>
+<h2 class="stit rv">Work <span>Experience</span></h2>
+<div class="tl rv">
+<div class="tli">
+<div class="tld r"></div>
+<div class="tldt">JANUARY 2025 — FEBRUARY 2025</div>
+<div class="tlr">Ethical Hacking Intern</div>
+<div class="tlo">Internship Studio · Remote</div>
+<ul class="tllist">
+<li>Conducted full-cycle penetration testing and vulnerability assessments on simulated enterprise environments using Metasploit, Burp Suite, and Wireshark</li>
+<li>Identified and exploited common attack vectors (web, network, credential-based); documented findings and recommended mitigations</li>
+<li>Executed ethical hacking simulations replicating real-world threats; analyzed case studies to strengthen defensive controls</li>
+<li>Collaborated on threat modeling exercises that directly informed security posture improvements</li>
+</ul>
+<div class="tltags"><span class="bdg r">Metasploit</span><span class="bdg">Burp Suite</span><span class="bdg">Wireshark</span><span class="bdg g">Penetration Testing</span></div>
+</div>
+<div class="tli">
+<div class="tld"></div>
+<div class="tldt">FEBRUARY 2026</div>
+<div class="tlr">Cybersecurity Job Simulation</div>
+<div class="tlo">Forage / Commonwealth Bank · Virtual</div>
+<ul class="tllist">
+<li>Performed data analysis and threat detection in simulated SOC environment</li>
+<li>Executed incident response workflows including triage, containment, and eradication</li>
+<li>Conducted penetration testing tasks and security awareness assessments</li>
+</ul>
+<div class="tltags"><span class="bdg">SOC Analysis</span><span class="bdg r">Incident Response</span><span class="bdg y">Commonwealth Bank</span></div>
+</div>
+<div class="tli">
+<div class="tld"></div>
+<div class="tldt">FEBRUARY 2026</div>
+<div class="tlr">Cyber Security Operations Job Simulation</div>
+<div class="tlo">Forage / DATACOM · Virtual</div>
+<ul class="tllist">
+<li>Completed cybersecurity operations simulation covering real-world security scenarios</li>
+<li>Practiced security monitoring, threat intelligence, and defensive operations</li>
+</ul>
+<div class="tltags"><span class="bdg">Cyber Operations</span><span class="bdg y">DATACOM</span><span class="bdg g">Threat Intelligence</span></div>
+</div>
+<div class="tli">
+<div class="tld g"></div>
+<div class="tldt">2023 — PRESENT</div>
+<div class="tlr">Security Tool Developer &amp; Bug Bounty Hunter</div>
+<div class="tlo">Open Source · GitHub: hellrider978</div>
+<ul class="tllist">
+<li>Built HackerOfHell ULTRA (3,153 lines), HELLSQLI (2,332 lines), HELLXSS (2,047 lines) — 7,500+ lines of security automation</li>
+<li>Frameworks cover 80+ attack techniques across 20 automated phases used by researchers worldwide</li>
+<li>Active bug bounty hunting on HackerOne and Bugcrowd — web apps, APIs, cloud infrastructure</li>
+</ul>
+<div class="tltags"><span class="bdg g">Python</span><span class="bdg">Bash</span><span class="bdg p">Open Source</span><span class="bdg y">Bug Bounty</span></div>
+</div>
+</div>
+</div>
+</section>
+<!-- EDUCATION -->
+<section id="education">
+<div class="W">
+<div class="stag rv">Section 05</div>
+<h2 class="stit rv">Education <span>Background</span></h2>
+<div class="egrid rv">
+<div class="ec"><div class="eico">🎓</div><div class="edeg">Bachelor of Technology — Computer Science &amp; Engineering</div><div class="einst">College of Technology &amp; Engineering, Udaipur</div><div class="eyr">2021 – 2025 (Expected)</div><div class="egrade">✓ Final Year — In Progress</div></div>
+<div class="ec"><div class="eico">📚</div><div class="edeg">Senior Secondary — 12th Standard</div><div class="einst">Kiran Bal Bharti School, Jaipur</div><div class="eyr">Passed 2021</div><div class="egrade">✓ 92% Score</div></div>
+<div class="ec"><div class="eico">🏫</div><div class="edeg">Secondary — 10th Standard</div><div class="einst">Kiran Bal Bharti School, Jaipur</div><div class="eyr">Passed 2019</div><div class="egrade">✓ 81% Score</div></div>
+</div>
+</div>
+</section>
+<!-- CERTIFICATIONS -->
+<section id="certifications">
+<div class="W">
+<div class="stag rv">Section 06</div>
+<h2 class="stit rv">Certifications &amp; <span>Achievements</span></h2>
+<div class="cgrid rv">
+<div class="cc"><div class="cbg v">VERIFIED</div><div class="cico">🏦</div><div class="cn">Introduction to Cybersecurity Job Simulation</div><div class="ciss">Forage / Commonwealth Bank</div><div class="cdt">February 2026</div></div>
+<div class="cc"><div class="cbg b">VERIFIED</div><div class="cico">🔐</div><div class="cn">Cyber Security Operations Job Simulation</div><div class="ciss">Forage / DATACOM</div><div class="cdt">February 2026</div></div>
+<div class="cc"><div class="cbg r">COMPLETED</div><div class="cico">🎯</div><div class="cn">Ethical Hacking Internship Completion</div><div class="ciss">Internship Studio</div><div class="cdt">February 2025</div></div>
+<div class="cc"><div class="cbg v">CREATOR</div><div class="cico">⚡</div><div class="cn">HackerOfHell ULTRA v5.0 — Pentest Framework</div><div class="ciss">Open Source — hellrider978</div><div class="cdt">3,153 Lines · 20 Phases · 80+ Techniques</div></div>
+<div class="cc"><div class="cbg v">CREATOR</div><div class="cico">💉</div><div class="cn">HELLSQLI + HELLXSS Ultra Frameworks</div><div class="ciss">Open Source — hellrider978</div><div class="cdt">4,379 Lines · 26 Modules · 200+ Payloads</div></div>
+<div class="cc"><div class="cbg b">ACTIVE</div><div class="cico">🏆</div><div class="cn">Bug Bounty Hunter</div><div class="ciss">HackerOne &amp; Bugcrowd — hellrider978</div><div class="cdt">Web · API · Cloud Security</div></div>
+</div>
+</div>
+</section>
+<!-- RESUME -->
+<section id="resume">
+<div class="W">
+<div class="stag rv">Section 07</div>
+<h2 class="stit rv">Download <span>Resume</span></h2>
+<div class="rw rv">
+<div class="rp">
+<div class="rpn">RAJESH BAJIYA</div>
+<div class="rps">HACKEROFHELL · PENETRATION TESTER · B.TECH CSE</div>
+<div class="rpse"><div class="rpst">// CONTACT</div>
+<div class="rpi">📧 <a href="mailto:rajeshbajya978@gmail.com">rajeshbajya978@gmail.com</a></div>
+<div class="rpi">📱 <span>+91 7073267031</span></div>
+<div class="rpi">📍 <span>Jaipur, Rajasthan, India</span></div>
+<div class="rpi">🐙 <a href="https://github.com/hellrider978" target="_blank">github.com/hellrider978</a></div>
+<div class="rpi">💼 <a href="https://www.linkedin.com/in/rajeshbajiya-836571219" target="_blank">LinkedIn Profile</a></div>
+</div>
+<div class="rpse"><div class="rpst">// EDUCATION</div>
+<div class="rpi">B.Tech CSE — <span>College of Tech &amp; Engg, Udaipur (2021-25)</span></div>
+<div class="rpi">12th — <span>92% · Kiran Bal Bharti, Jaipur (2021)</span></div>
+<div class="rpi">10th — <span>81% · Kiran Bal Bharti, Jaipur (2019)</span></div>
+</div>
+<div class="rpse"><div class="rpst">// TOOLS BUILT</div>
+<div class="rpi"><span>HackerOfHell ULTRA</span> — 3,153 lines, 20 phases</div>
+<div class="rpi"><span>HELLSQLI</span> — 2,332 lines, 13 modules</div>
+<div class="rpi"><span>HELLXSS</span> — 2,047 lines, 200+ payloads</div>
+</div>
+<div class="rpse"><div class="rpst">// CERTIFICATIONS</div>
+<div class="rpi">Cybersecurity Simulation — <span>Commonwealth Bank (2026)</span></div>
+<div class="rpi">Cyber Security Ops — <span>DATACOM (2026)</span></div>
+<div class="rpi">Ethical Hacking Internship — <span>Internship Studio (2025)</span></div>
+</div>
+</div>
+<div class="ri">
+<h3>Get My Full Resume</h3>
+<p>Download my complete resume with detailed experience, projects, skills, and certifications. Includes all penetration testing projects and tool development work.</p>
+<a href="Rajesh_Bajiya.pdf" download class="dlb" id="dlBtn">
+<span class="dlico">📄</span>
+<span class="dlt"><span class="m">Download Resume — PDF</span><span class="s">RAJESH_BAJIYA_RESUME.PDF</span></span>
+</a>
+<a href="mailto:rajeshbajya978@gmail.com?subject=Resume Request — Rajesh Bajiya" class="dlb">
+<span class="dlico">📧</span>
+<span class="dlt"><span class="m">Request via Email</span><span class="s">rajeshbajya978@gmail.com</span></span>
+</a>
+<div class="rsts">
+<div class="rst"><div class="n">7,500+</div><div class="l">Lines Code</div></div>
+<div class="rst"><div class="n">80+</div><div class="l">Techniques</div></div>
+<div class="rst"><div class="n">3</div><div class="l">Frameworks</div></div>
+<div class="rst"><div class="n">20</div><div class="l">Auto Phases</div></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- CONTACT -->
+<section id="contact">
+<div class="W">
+<div class="stag rv">Section 08</div>
+<h2 class="stit rv">Get In <span>Touch</span></h2>
+<div class="cw rv">
+<div class="ci">
+<h3>Let's Work Together</h3>
+<p>Available for bug bounty collaborations, penetration testing engagements, security consulting, and tool development. Usually respond within 24 hours.</p>
+<div class="citems">
+<a href="mailto:rajeshbajya978@gmail.com" class="citem"><span class="ciico">📧</span><div><div class="cilbl">Email</div><div class="cival">rajeshbajya978@gmail.com</div></div></a>
+<a href="tel:+917073267031" class="citem"><span class="ciico">📱</span><div><div class="cilbl">Phone / WhatsApp</div><div class="cival">+91 7073267031</div></div></a>
+<a href="https://github.com/hellrider978" target="_blank" class="citem"><span class="ciico">🐙</span><div><div class="cilbl">GitHub</div><div class="cival">github.com/hellrider978</div></div></a>
+<a href="https://www.linkedin.com/in/rajeshbajiya-836571219" target="_blank" class="citem"><span class="ciico">💼</span><div><div class="cilbl">LinkedIn</div><div class="cival">Rajesh Bajiya</div></div></a>
+</div>
+<div class="sog">
+<a href="https://github.com/hellrider978" target="_blank" class="soc">🐙 hellrider978</a>
+<a href="https://hackerone.com/hellrider978" target="_blank" class="soc">🎯 HackerOne</a>
+<a href="https://bugcrowd.com/hellrider978" target="_blank" class="soc">🐛 Bugcrowd</a>
+<a href="https://www.linkedin.com/in/rajeshbajiya-836571219" target="_blank" class="soc">💼 LinkedIn</a>
+</div>
+</div>
+<form class="cf" onsubmit="subF(event)">
+<div class="fr">
+<div class="fg"><label>Name</label><input type="text" placeholder="Your Name" required></div>
+<div class="fg"><label>Email</label><input type="email" placeholder="your@email.com" required></div>
+</div>
+<div class="fg"><label>Subject</label><input type="text" placeholder="Bug Bounty / Pentest / Collaboration / Job Offer"></div>
+<div class="fg"><label>Message</label><textarea placeholder="Describe your project or inquiry..."></textarea></div>
+<button type="submit" class="btn" style="width:100%;padding:14px;justify-content:center;border:none">SEND MESSAGE ⚡</button>
+</form>
+</div>
+</div>
+</section>
+<!-- DEPLOY -->
+<section id="deploy">
+<div class="W">
+<div class="stag rv">Section 09</div>
+<h2 class="stit rv">Deploy on <span>GitHub Pages</span></h2>
+<p class="rv" style="color:var(--mu);font-size:.9rem;line-height:1.85;max-width:660px;margin-bottom:40px">Make your portfolio live free at <strong style="color:var(--a)">https://hellrider978.github.io</strong> in under 5 minutes.</p>
+<div class="dgrid rv">
+<div class="dc"><div class="dcn">01</div><div class="dct">Create GitHub Repository</div><div class="dcd">Create a repo named exactly as shown to activate GitHub Pages for your username URL.</div><pre class="code"><span class="cm"># Name it EXACTLY:</span>
+<span class="kw">hellrider978</span><span class="ar">.github.io</span>
+<span class="cm"># Settings: Public, no README</span></pre></div>
+<div class="dc"><div class="dcn">02</div><div class="dct">Save as index.html + Add PDF</div><div class="dcd">Save this portfolio file as index.html. Place Rajesh_Bajiya.pdf in same folder.</div><pre class="code"><span class="kw">index.html</span>         ← portfolio
+<span class="ar">Rajesh_Bajiya.pdf</span> ← resume</pre></div>
+<div class="dc"><div class="dcn">03</div><div class="dct">Upload with Git</div><div class="dcd">Open terminal in your portfolio folder and run:</div><pre class="code"><span class="kw">git</span> <span class="ar">init</span>
+<span class="kw">git</span> <span class="ar">add .</span>
+<span class="kw">git</span> <span class="ar">commit -m "Portfolio"</span>
+<span class="kw">git</span> <span class="ar">branch -M main</span>
+<span class="kw">git</span> <span class="ar">remote add origin</span>
+  https://github.com/hellrider978/
+  hellrider978.github.io.git
+<span class="kw">git</span> <span class="ar">push -u origin main</span></pre></div>
+<div class="dc"><div class="dcn">04</div><div class="dct">Enable GitHub Pages</div><div class="dcd">Repo → Settings → Pages → Source: Deploy from branch → Branch: main → Save.</div><pre class="code"><span class="cm"># GitHub repo → Settings → Pages</span>
+Source: <span class="kw">Deploy from branch</span>
+Branch: <span class="ar">main</span> / (root) → Save
+
+<span class="kw">https://hellrider978.github.io</span>
+<span class="cm"># Live in 1-2 minutes!</span></pre></div>
+<div class="dc"><div class="dcn">05</div><div class="dct">Update Portfolio Anytime</div><div class="dcd">Edit index.html and push again — auto-redeploys within 2 minutes.</div><pre class="code"><span class="kw">git</span> <span class="ar">add .</span>
+<span class="kw">git</span> <span class="ar">commit -m "Update"</span>
+<span class="kw">git</span> <span class="ar">push</span>
+<span class="cm"># Live in ~2 mins!</span></pre></div>
+<div class="dc"><div class="dcn">06</div><div class="dct">Fix Resume Download</div><div class="dcd">The PDF must be in the same folder as index.html and pushed to GitHub for the download button to work.</div><pre class="code"><span class="cm"># Put PDF in same folder:</span>
+<span class="kw">ls</span> <span class="ar">index.html Rajesh_Bajiya.pdf</span>
+<span class="kw">git</span> <span class="ar">add Rajesh_Bajiya.pdf</span>
+<span class="kw">git</span> <span class="ar">commit -m "Add resume"</span>
+<span class="kw">git</span> <span class="ar">push</span></pre></div>
+</div>
+<div class="tipbox rv">
+<div class="tiptit">✓ PRO TIPS TO MAKE IT 50X STRONGER</div>
+<ul class="tiplist">
+<li>Add <strong>profile README</strong> at github.com/hellrider978/hellrider978</li>
+<li>Pin your 3 tools at top of GitHub profile</li>
+<li>Add portfolio URL to HackerOne &amp; Bugcrowd profiles</li>
+<li>Update projects after each new tool release</li>
+<li>Share on LinkedIn — gets recruiter attention</li>
+<li>Add <strong>write-ups</strong> of bug bounty findings</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- FOOTER -->
+<footer>
+<div class="fi">
+<div class="fl"><div class="fn">RAJESH BAJIYA — HACKEROFHELL</div><p>Penetration Tester · Bug Bounty Hunter · Tool Developer<br>📧 rajeshbajya978@gmail.com · 📱 +91 7073267031<br>📍 Jaipur, Rajasthan, India 🇮🇳</p></div>
+<div class="fc"><div class="hh">HACKEROFHELL</div>© 2025 Rajesh Bajiya · All Rights Reserved<br>Built with ⚡ by HACKEROFHELL</div>
+<div class="fr2">
+<a href="https://github.com/hellrider978" target="_blank">🐙 github.com/hellrider978</a>
+<a href="https://hackerone.com/hellrider978" target="_blank">🎯 HackerOne</a>
+<a href="https://bugcrowd.com/hellrider978" target="_blank">🐛 Bugcrowd</a>
+<a href="https://www.linkedin.com/in/rajeshbajiya-836571219" target="_blank">💼 LinkedIn</a>
+<a href="mailto:rajeshbajya978@gmail.com">✉️ rajeshbajya978@gmail.com</a>
+</div>
+</div>
+</footer>
+<script>
+// CURSOR
+const cur=document.getElementById("cur"),ring=document.getElementById("ring");
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener("mousemove",e=>{mx=e.clientX;my=e.clientY;cur.style.cssText="left:"+(mx-5)+"px;top:"+(my-5)+"px"});
+(function aR(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.cssText="left:"+(rx-15)+"px;top:"+(ry-15)+"px";requestAnimationFrame(aR)})();
+document.querySelectorAll("a,button,.tool,.pc,.scat,.citem,.soc,.dc").forEach(e=>{
+  e.addEventListener("mouseenter",()=>ring.classList.add("h"));
+  e.addEventListener("mouseleave",()=>ring.classList.remove("h"));
+});
+// PARTICLES
+const cv=document.getElementById("ptc"),cx=cv.getContext("2d");
+let W,H,pts=[];
+function rsz(){W=cv.width=innerWidth;H=cv.height=innerHeight}rsz();addEventListener("resize",rsz);
+class Pt{constructor(){this.rs()}rs(){this.x=Math.random()*W;this.y=Math.random()*H;this.vx=(Math.random()-.5)*.38;this.vy=(Math.random()-.5)*.38;this.s=Math.random()*1.3+.3;this.a=Math.random()*.3+.1;this.c=["#00d4ff","#ff2d55","#39ff14","#bf5af2"][0|Math.random()*4]}up(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>W||this.y<0||this.y>H)this.rs()}dr(){cx.globalAlpha=this.a;cx.fillStyle=this.c;cx.beginPath();cx.arc(this.x,this.y,this.s,0,Math.PI*2);cx.fill()}}
+for(let i=0;i<90;i++)pts.push(new Pt());
+(function an(){cx.clearRect(0,0,W,H);for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<100){cx.globalAlpha=(1-d/100)*.06;cx.strokeStyle="#00d4ff";cx.lineWidth=.4;cx.beginPath();cx.moveTo(pts[i].x,pts[i].y);cx.lineTo(pts[j].x,pts[j].y);cx.stroke()}}pts.forEach(p=>{p.up();p.dr()});requestAnimationFrame(an)})();
+// SCROLL PROGRESS + NAV ACTIVE
+addEventListener("scroll",()=>{
+  document.getElementById("prog").style.width=(scrollY/(document.body.scrollHeight-innerHeight)*100)+"%";
+  let c="";
+  document.querySelectorAll("section[id]").forEach(s=>{if(scrollY>=s.offsetTop-80)c=s.id});
+  document.querySelectorAll(".nlinks a").forEach(a=>{a.classList.toggle("act",a.getAttribute("href")==="#"+c)});
+});
+// REVEAL
+const io=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add("in")}),{threshold:.08});
+document.querySelectorAll(".rv").forEach(e=>io.observe(e));
+// SKILL BARS
+const bo=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){const b=x.target,w=b.dataset.w;setTimeout(()=>b.style.transform="scaleX("+w+")",80);bo.unobserve(b)}}),{threshold:.3});
+document.querySelectorAll(".sf").forEach(b=>bo.observe(b));
+// COUNTERS
+function cnt(el,t,d=2000,s=""){let v=0,st=t/(d/16);const iv=setInterval(()=>{v+=st;if(v>=t){v=t;clearInterval(iv)}el.textContent=Math.floor(v).toLocaleString()+s},16)}
+const ho=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){setTimeout(()=>{cnt(document.getElementById("c1"),150,2200);cnt(document.getElementById("c2"),3,1400);cnt(document.getElementById("c3"),7500,2500,"+");cnt(document.getElementById("c4"),80,1800,"+")},600);ho.disconnect()}}),{threshold:.3});
+ho.observe(document.getElementById("hero"));
+// HAMBURGER
+const ham=document.getElementById("ham"),mm=document.getElementById("mm");
+ham.addEventListener("click",()=>{ham.classList.toggle("open");mm.classList.toggle("open")});
+function cM(){ham.classList.remove("open");mm.classList.remove("open")}
+// PROJECT FILTER
+document.getElementById("pf").addEventListener("click",e=>{
+  if(!e.target.classList.contains("pfb"))return;
+  document.querySelectorAll(".pfb").forEach(b=>b.classList.remove("ac"));
+  e.target.classList.add("ac");
+  const f=e.target.dataset.f;
+  document.querySelectorAll("#pg .pc").forEach(c=>{c.classList.toggle("hidden",f!=="all"&&!c.dataset.cat.includes(f))});
+});
+// SMOOTH SCROLL — THIS IS WHAT MAKES ALL NAV LINKS WORK
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener("click",e=>{
+    const id=a.getAttribute("href");
+    const target=document.querySelector(id);
+    if(target){
+      e.preventDefault();
+      cM();
+      setTimeout(()=>{
+        const y=target.getBoundingClientRect().top+scrollY-60;
+        window.scrollTo({top:y,behavior:"smooth"});
+      },10);
+    }
+  });
+});
+// CONTACT FORM
+function subF(e){
+  e.preventDefault();
+  const btn=e.target.querySelector("button[type=submit]");
+  const orig=btn.textContent;
+  btn.textContent="✓ SENT!";btn.style.background="var(--grn)";btn.style.color="var(--bg)";
+  setTimeout(()=>{btn.textContent=orig;btn.style.background="";btn.style.color="";e.target.reset()},3000);
+}
+// RESUME DOWNLOAD
+document.getElementById("dlBtn").addEventListener("click",function(e){
+  fetch("Rajesh_Bajiya.pdf",{method:"HEAD"}).then(r=>{
+    if(!r.ok){e.preventDefault();alert("To enable resume download:\n1. Save PDF as Rajesh_Bajiya.pdf\n2. Put it in same folder as index.html\n3. Push both to GitHub\n\nOr email: rajeshbajya978@gmail.com")}
+  }).catch(()=>{e.preventDefault();window.open("mailto:rajeshbajya978@gmail.com?subject=Resume Request")});
+});
+</script>
+</body>
+</html>
