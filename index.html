@@ -253,22 +253,6 @@ section{position:relative;z-index:1}
 .fg input:focus,.fg textarea:focus{border-color:var(--a);box-shadow:0 0 14px rgba(0,212,255,.1)}
 .fg textarea{min-height:105px}
 .fr{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-/* DEPLOY */
-#deploy{background:var(--bg2)}
-.dgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
-.dc{background:var(--card);border:1px solid var(--br);padding:22px;position:relative;overflow:hidden;transition:all .22s}
-.dc:hover{border-color:var(--br2);transform:translateY(-3px)}
-.dcn{font-family:"Orbitron",monospace;font-size:2.6rem;font-weight:900;color:rgba(0,212,255,.06);position:absolute;top:6px;right:14px;line-height:1}
-.dct{font-family:"Orbitron",monospace;font-size:.8rem;font-weight:700;color:var(--a);letter-spacing:.06em;margin-bottom:9px}
-.dcd{font-size:.8rem;color:var(--mu);line-height:1.7;margin-bottom:12px}
-.code{background:rgba(2,5,8,.9);border:1px solid var(--br);border-left:3px solid var(--a);padding:11px 13px;font-family:"Share Tech Mono",monospace;font-size:.64rem;color:var(--grn);line-height:1.85;overflow-x:auto;white-space:pre}
-.code .cm{color:var(--mu)}.code .kw{color:var(--a)}.code .ar{color:var(--red)}
-.tipbox{margin-top:32px;padding:18px;border:1px solid rgba(57,255,20,.2);background:rgba(57,255,20,.03);border-left:3px solid var(--grn)}
-.tiptit{font-family:"Share Tech Mono",monospace;font-size:.62rem;color:var(--grn);letter-spacing:.17em;margin-bottom:10px}
-.tiplist{display:grid;grid-template-columns:1fr 1fr;gap:0 22px;list-style:none}
-.tiplist li{font-size:.8rem;color:var(--mu);line-height:2;padding-left:14px;position:relative}
-.tiplist li::before{content:"→";position:absolute;left:0;color:var(--grn);font-size:.66rem}
-.tiplist li strong{color:var(--txt)}
 /* FOOTER */
 footer{background:var(--bg);border-top:1px solid var(--br);padding:clamp(22px,4vw,38px) clamp(20px,5vw,52px);position:relative;z-index:1}
 .fi{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px}
@@ -735,55 +719,6 @@ footer{background:var(--bg);border-top:1px solid var(--br);padding:clamp(22px,4v
 <div class="fg"><label>Message</label><textarea placeholder="Describe your project or inquiry..."></textarea></div>
 <button type="submit" class="btn" style="width:100%;padding:14px;justify-content:center;border:none">SEND MESSAGE ⚡</button>
 </form>
-</div>
-</div>
-</section>
-<!-- DEPLOY -->
-<section id="deploy">
-<div class="W">
-<div class="stag rv">Section 09</div>
-<h2 class="stit rv">Deploy on <span>GitHub Pages</span></h2>
-<p class="rv" style="color:var(--mu);font-size:.9rem;line-height:1.85;max-width:660px;margin-bottom:40px">Make your portfolio live free at <strong style="color:var(--a)">https://hellrider978.github.io</strong> in under 5 minutes.</p>
-<div class="dgrid rv">
-<div class="dc"><div class="dcn">01</div><div class="dct">Create GitHub Repository</div><div class="dcd">Create a repo named exactly as shown to activate GitHub Pages for your username URL.</div><pre class="code"><span class="cm"># Name it EXACTLY:</span>
-<span class="kw">hellrider978</span><span class="ar">.github.io</span>
-<span class="cm"># Settings: Public, no README</span></pre></div>
-<div class="dc"><div class="dcn">02</div><div class="dct">Save as index.html + Add PDF</div><div class="dcd">Save this portfolio file as index.html. Place Rajesh_Bajiya.pdf in same folder.</div><pre class="code"><span class="kw">index.html</span>         ← portfolio
-<span class="ar">Rajesh_Bajiya.pdf</span> ← resume</pre></div>
-<div class="dc"><div class="dcn">03</div><div class="dct">Upload with Git</div><div class="dcd">Open terminal in your portfolio folder and run:</div><pre class="code"><span class="kw">git</span> <span class="ar">init</span>
-<span class="kw">git</span> <span class="ar">add .</span>
-<span class="kw">git</span> <span class="ar">commit -m "Portfolio"</span>
-<span class="kw">git</span> <span class="ar">branch -M main</span>
-<span class="kw">git</span> <span class="ar">remote add origin</span>
-  https://github.com/hellrider978/
-  hellrider978.github.io.git
-<span class="kw">git</span> <span class="ar">push -u origin main</span></pre></div>
-<div class="dc"><div class="dcn">04</div><div class="dct">Enable GitHub Pages</div><div class="dcd">Repo → Settings → Pages → Source: Deploy from branch → Branch: main → Save.</div><pre class="code"><span class="cm"># GitHub repo → Settings → Pages</span>
-Source: <span class="kw">Deploy from branch</span>
-Branch: <span class="ar">main</span> / (root) → Save
-
-<span class="kw">https://hellrider978.github.io</span>
-<span class="cm"># Live in 1-2 minutes!</span></pre></div>
-<div class="dc"><div class="dcn">05</div><div class="dct">Update Portfolio Anytime</div><div class="dcd">Edit index.html and push again — auto-redeploys within 2 minutes.</div><pre class="code"><span class="kw">git</span> <span class="ar">add .</span>
-<span class="kw">git</span> <span class="ar">commit -m "Update"</span>
-<span class="kw">git</span> <span class="ar">push</span>
-<span class="cm"># Live in ~2 mins!</span></pre></div>
-<div class="dc"><div class="dcn">06</div><div class="dct">Fix Resume Download</div><div class="dcd">The PDF must be in the same folder as index.html and pushed to GitHub for the download button to work.</div><pre class="code"><span class="cm"># Put PDF in same folder:</span>
-<span class="kw">ls</span> <span class="ar">index.html Rajesh_Bajiya.pdf</span>
-<span class="kw">git</span> <span class="ar">add Rajesh_Bajiya.pdf</span>
-<span class="kw">git</span> <span class="ar">commit -m "Add resume"</span>
-<span class="kw">git</span> <span class="ar">push</span></pre></div>
-</div>
-<div class="tipbox rv">
-<div class="tiptit">✓ PRO TIPS TO MAKE IT 50X STRONGER</div>
-<ul class="tiplist">
-<li>Add <strong>profile README</strong> at github.com/hellrider978/hellrider978</li>
-<li>Pin your 3 tools at top of GitHub profile</li>
-<li>Add portfolio URL to HackerOne &amp; Bugcrowd profiles</li>
-<li>Update projects after each new tool release</li>
-<li>Share on LinkedIn — gets recruiter attention</li>
-<li>Add <strong>write-ups</strong> of bug bounty findings</li>
-</ul>
 </div>
 </div>
 </section>
